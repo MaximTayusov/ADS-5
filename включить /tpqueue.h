@@ -1,17 +1,16 @@
 # include < cassert>
-struct SYM
-{
-    char ch;
-    int prior;
-};
+ 
 template< typename T>
+
+ template< typename T>
 class TPQueue
 {
+  // Сюда помещается описание структуры "Очередь с приоритетами"
      structITEM
     {
  T data;
  ITEM* next;
-       
+ ITEM* pred;
     };
 public:
     TPQueue() :head(nullptr), tail(nullptr) {}
@@ -24,13 +23,15 @@ private:
  ITEM* head;
  ITEM* tail;
 };
+
+
 template< typename T>
 typename TPQueue<T>::ITEM* TPQueue<T>::create(const T& data)
 {
  ITEM* item = new ITEM;
  item->data = data;
  item->next= nullptr;
-  
+ item->pred= nullptr;
     return item;
 }
 template< typename T>
@@ -40,31 +41,53 @@ TPQueue<T>::~TPQueue()
         pop();
 }
 template< typename T>
-void TPQueue<T>::push(const T& data)
+void TPQueue<T>::push(const T& dat)
 {
-        if (tail && head)
-        {
- ITEM* begin = head;
- ITEM* newItem = create(data);
-            if ((head->data).prior < data.prior) {
- newItem->next = head;
- head = newItem;
-           }
-            else {
-                while (begin->next!= nullptr && (begin->next- > > data.prior < data.prior)) {
- begin = begin->next;
-                }
- newItem->next = begin->next;
- begin->next = newItem;
-            }
-        }
+    if (head == nullptr)
+    {
+ head = create(dat);
+ tail = head;
+    }
+    else if (tail->data.prior >= dat.prior)
+    {
+        if (tail->data.ch == dat.ch)
+ tail->data = dat;
         else
         {
- head = create(data);
- head->next = tail;
- tail = head;
+ tail->next= create(dat);
+ tail->next- > > pred = tail;
+ tail = tail->next;
         }
-     
+    }
+    else if (head == tail)
+    {
+ tail->pred= create(dat);
+ head = tail->pred;
+ head->next = tail;
+    }
+    else
+    {
+ ITEM* tmp = tail;
+        while (tmp != head && tmp->data.prior < dat.prior)
+        {
+ tmp = tmp->pred;
+        }
+        if (tmp->data.prior == dat.prior)
+        {
+ ITEM* cell = new ITEM;
+ cell->next = tmp->next;
+ cell->pred = tmp;
+ cell->data = dat;
+ tmp->next- > > pred = cell;
+ tmp->next = cell;
+        }
+        if (tmp == head && tmp->data.prior < dat.prior)
+        {
+ head->pred= create(dat);
+ head = head->pred;
+ head->next = tmp;
+        }
+    }
 }
 template< typename T>
 T TPQueue<T>::pop()
@@ -77,13 +100,8 @@ T TPQueue<T>::pop()
  head = temp;
         return data;
     }
-    else
-    {
-       
- T data; data.ch= '0'; data.prior = '0';
-        return data;
-    }
 }
+
 template< typename T>
 void TPQueue<T>::print() const
 {
@@ -95,3 +113,10 @@ void TPQueue<T>::print() const
     }
  std::cout << std::endl;
 }
+
+struct SYM
+{
+	char ch;
+	int prior;
+}; 
+}; 
